@@ -133,7 +133,7 @@
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
             </button>
             <div class="config-header-divider"></div>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
         </div>
     </header>
 
@@ -351,10 +351,10 @@
     </main>
 </section>
 
-<!-- ================= TELA: POLÍTICA DE PRIVACIDADE ================= -->
+<!-- ================= TELA: POLÍTICA DE PRIVACIDADE (ORIGINAL DO GITHUB) ================= -->
 <section id="screen-privacidade" class="screen">
     <header class="legal-header">
-        <button class="icon-btn" onclick="go('config')" aria-label="Voltar" style="background:none;border:none;cursor:pointer;display:flex;">
+        <button class="icon-btn" onclick="goBackFromLegal()" aria-label="Voltar" style="background:none;border:none;cursor:pointer;display:flex;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
         <h1 class="legal-title">Política de Privacidade</h1>
@@ -362,25 +362,89 @@
     <main style="overflow-y:auto; flex:1; padding:20px;">
         <section class="legal-section">
             <h2>POLÍTICA DE PRIVACIDADE — KONEAT WORD</h2>
-            <p>O KONEAT Word respeita a privacidade dos usuários e busca tratar seus dados de forma segura sob a LGPD.</p>
+            <p>O KONEAT Word respeita a privacidade dos usuários e busca tratar seus dados pessoais de forma transparente, segura e compatível com a legislação aplicável, incluindo a Lei Geral de Proteção de Dados Pessoais (LGPD).</p>
+            <ol>
+                <li><strong>Dados coletados:</strong> A plataforma poderá tratar dados fornecidos pelo usuário durante o cadastro e o uso do serviço, bem como informações técnicas para funcionamento e segurança.</li>
+                <li><strong>Finalidades do tratamento:</strong> Os dados poderão ser utilizados para administrar contas, disponibilizar funcionalidades, prestar suporte e cumprir obrigações legais.</li>
+                <li><strong>Publicidade:</strong> Quando houver publicidade personalizada, o KONEAT informará as práticas aplicáveis e respeitará os requisitos legais e as escolhas dos usuários.</li>
+                <li><strong>Compartilhamento:</strong> Os dados poderão ser compartilhados com prestadores de serviços necessários à operação da plataforma ou autoridades com fundamento legal.</li>
+                <li><strong>Segurança e conservação:</strong> Adotamos medidas técnicas e administrativas razoáveis para proteger os dados pessoais.</li>
+                <li><strong>Direitos dos usuários:</strong> O usuário poderá solicitar informações sobre o tratamento de seus dados e exercer direitos como acesso, correção e exclusão.</li>
+                <li><strong>Exclusão da conta:</strong> O usuário poderá solicitar a exclusão da conta pelos meios disponibilizados pela plataforma.</li>
+            </ol>
         </section>
     </main>
+    <div class="legal-checkbox-bar">
+        <input type="checkbox" id="chkPrivacidade" checked disabled>
+        <label for="chkPrivacidade">Eu concordo com a Política de Privacidade.</label>
+    </div>
 </section>
 
-<!-- ================= TELA: TERMOS E POLÍTICAS ================= -->
+<!-- ================= TELA: TERMOS E POLÍTICAS (ORIGINAL DO GITHUB) ================= -->
 <section id="screen-termos" class="screen">
     <header class="legal-header">
-        <button class="icon-btn" onclick="go('config')" aria-label="Voltar" style="background:none;border:none;cursor:pointer;display:flex;">
+        <button class="icon-btn" onclick="goBackFromLegal()" aria-label="Voltar" style="background:none;border:none;cursor:pointer;display:flex;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
         <h1 class="legal-title">Termos e Políticas</h1>
     </header>
     <main style="overflow-y:auto; flex:1; padding:20px;">
+        <!-- 1. Termos de Uso -->
         <section class="legal-section">
             <h2>TERMOS DE USO — KONEAT WORD</h2>
-            <p>Bem-vindo ao KONEAT Word. Ao utilizar a plataforma, você concorda com nossos termos.</p>
+            <p>Bem-vindo ao KONEAT Word, uma rede social criada para conectar pessoas, compartilhar conteúdos e promover interações em um ambiente seguro e respeitoso.</p>
+            <p>Ao criar uma conta ou utilizar a plataforma, você declara que leu e concorda com estes Termos de Uso e com as políticas complementares do KONEAT.</p>
+            <ol>
+                <li><strong>Uso da plataforma:</strong> O usuário compromete-se a utilizar o KONEAT de maneira legal, responsável e respeitosa, sem prejudicar outros usuários ou comprometer a segurança da rede.</li>
+                <li><strong>Informações verdadeiras:</strong> É proibido utilizar a plataforma para fraudes, falsidade de identidade, personificação de terceiros ou criação de perfis destinados a enganar outras pessoas.</li>
+                <li><strong>Responsabilidade pelo conteúdo:</strong> Cada usuário é responsável pelo conteúdo que publica, incluindo textos, fotos, vídeos, comentários e mensagens, devendo respeitar a legislação aplicável e os direitos de terceiros.</li>
+                <li><strong>Cumprimento das regras:</strong> O KONEAT poderá remover conteúdos, limitar funcionalidades, suspender ou encerrar contas que violem estes Termos ou as políticas da plataforma.</li>
+                <li><strong>Atualizações:</strong> Estes Termos poderão ser atualizados para acompanhar mudanças na plataforma, na legislação e nas medidas de segurança.</li>
+            </ol>
+        </section>
+
+        <!-- 2. Diretrizes da Comunidade -->
+        <section class="legal-section">
+            <h2>DIRETRIZES DA COMUNIDADE</h2>
+            <p>O KONEAT Word valoriza a liberdade de expressão, o respeito e a convivência entre pessoas com opiniões diferentes.</p>
+            <p><strong>Não permitimos:</strong></p>
+            <ul>
+                <li>Ofensas direcionadas, humilhação, assédio ou perseguição a outros usuários.</li>
+                <li>Ameaças, intimidação ou incentivo à violência.</li>
+                <li>Discurso de ódio ou ataques contra pessoas por características protegidas pela legislação.</li>
+                <li>Divulgação de informações privadas de terceiros sem autorização.</li>
+                <li>Perfis falsos utilizados para enganar, fraudar ou prejudicar outras pessoas.</li>
+                <li>Conteúdos que incentivem atividades ilegais ou violem os direitos de terceiros.</li>
+            </ul>
+        </section>
+
+        <!-- 3. Política de Conteúdo -->
+        <section class="legal-section">
+            <h2>POLÍTICA DE CONTEÚDO E SEGURANÇA</h2>
+            <p>Para proteger a comunidade, o KONEAT Word não permite a publicação, distribuição ou promoção de determinados conteúdos proibidos:</p>
+            <ol>
+                <li>Exploração ou abuso sexual infantil.</li>
+                <li>Conteúdo sexual ilegal ou não consensual.</li>
+                <li>Ameaças sérias ou incentivo à violência.</li>
+                <li>Fraudes, golpes, phishing, malware e links maliciosos.</li>
+                <li>Spam, solicitações fraudulentas e manipulação de métricas.</li>
+            </ol>
+        </section>
+
+        <!-- 4. Política de Publicidade -->
+        <section class="legal-section">
+            <h2>POLÍTICA DE PUBLICIDADE</h2>
+            <p>O KONEAT Word permite campanhas publicitárias e ações comerciais autorizadas, com o objetivo de conectar empresas, profissionais, marcas e público.</p>
+            <ul>
+                <li><strong>Transparência:</strong> Anúncios deverão ser identificados como publicidade ou conteúdo patrocinado.</li>
+                <li><strong>Práticas proibidas:</strong> Não são permitidos anúncios que promovam golpes, produtos ilegais ou alegações enganosas.</li>
+            </ul>
         </section>
     </main>
+    <div class="legal-checkbox-bar">
+        <input type="checkbox" id="chkTermos" checked disabled>
+        <label for="chkTermos">Eu concordo com os Termos de Uso do Koneat.</label>
+    </div>
 </section>
 
 <!-- ================= TELA: EDITAR PERFIL ================= -->
@@ -483,3 +547,4 @@
 <script src="js/app.js"></script>
 </body>
 </html>
+
