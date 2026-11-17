@@ -7,6 +7,9 @@ let userPosts = JSON.parse(localStorage.getItem('koneat_posts') || '[]');
 let userStories = JSON.parse(localStorage.getItem('koneat_stories') || '[]');
 let userVirals = JSON.parse(localStorage.getItem('koneat_virals') || '[]');
 
+let userConversations = JSON.parse(localStorage.getItem('koneat_conversations') || '[]');
+let userMessageRequests = JSON.parse(localStorage.getItem('koneat_requests') || '[]');
+
 function setUsername(name) {
     if (!name) return;
     name = name.toLowerCase().replace(/[^a-z0-9._]/g, '');
@@ -16,15 +19,20 @@ function setUsername(name) {
         const isPrivate = localStorage.getItem("koneat_private_account") === "true";
         profileTopName.textContent = name + (isPrivate ? " 🔒" : "");
     }
+    var msgUsername = document.getElementById('messagesCurrentUsername');
+    if(msgUsername) {
+        msgUsername.textContent = '@' + name;
+    }
 }
 
 /* ==========================================================
-   ROTEAMENTO SPA INTELIGENTE (COM SUPORTE A PRIVACIDADE/TERMOS)
+   ROTEAMENTO SPA INTELIGENTE
    ========================================================== */
 let legalReturnScreen = 'config';
+let blocksReturnScreen = 'atividades'; 
+let connectionsReturnScreen = 'perfil';
 
 function go(n) {
-    // Se o usuário está indo para as telas legais, guarda de onde ele veio (perfil ou config)
     if (n === 'privacidade' || n === 'termos') {
         const activeScreen = document.querySelector('.screen.active');
         if (activeScreen && activeScreen.id === 'screen-perfil') {
@@ -76,11 +84,192 @@ function go(n) {
         syncAccountInfoUI();
     } else if (n === 'atividades') {
         syncActivitiesUI();
+    } else if (n === 'seguidores') {
+        updateConnectionIndicator(document.querySelector('#screen-seguidores .tab-conn-btn.active'));
+    } else if (n === 'seguindo') {
+        updateConnectionIndicator(document.querySelector('#screen-seguindo .tab-conn-btn.active'));
+    } else if (n === 'bloqueios') {
+        updateBlockIndicator(document.querySelector('#screen-bloqueios .tab-conn-btn.active'));
+    } else if (n === 'mensagens') {
+        const msgUser = document.getElementById('messagesCurrentUsername');
+        if(msgUser) msgUser.textContent = '@' + (currentUsername || 'eributtler');
+        renderMessagesUI();
     }
 }
 
 function goBackFromLegal() {
     go(legalReturnScreen || 'config');
+}
+
+function openFollowersScreen() {
+    connectionsReturnScreen = 'perfil';
+    const titleEl = document.getElementById('seguidoresUsernameTitle');
+    if(titleEl) titleEl.textContent = '@' + (currentUsername || 'koneat_user');
+    go('seguidores');
+}
+
+function openFollowingScreen() {
+    connectionsReturnScreen = 'perfil';
+    const titleEl = document.getElementById('seguindoUsernameTitle');
+    if(titleEl) titleEl.textContent = '@' + (currentUsername || 'koneat_user');
+    go('seguindo');
+}
+
+function openBloqueiosFrom(source) {
+    blocksReturnScreen = source || 'atividades';
+    go('bloqueios');
+}
+
+function goBackFromConnections() {
+    go(connectionsReturnScreen || 'perfil');
+}
+
+function goBackFromBlocks() {
+    go(blocksReturnScreen || 'atividades');
+}
+
+/* Indicador deslizante dinâmico para abas de Seguidores / Seguindo */
+function switchConnectionTab(evt, tabIndex, screenId) {
+    const screen = document.getElementById(screenId);
+    if (!screen) return;
+
+    screen.querySelectorAll('.tab-conn-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.color = '#8e8e93';
+    });
+    screen.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+        content.style.display = 'none';
+    });
+
+    const btn = evt.currentTarget;
+    btn.classList.add('active');
+    btn.style.color = '#000';
+
+    const targetId = screenId === 'screen-seguidores' 
+        ? (tabIndex === 0 ? 'tab-seguidores-lista' : tabIndex === 1 ? 'tab-remover-lista' : 'tab-bloquear-lista')
+        : (tabIndex === 0 ? 'tab-seguindo-lista' : tabIndex === 1 ? 'tab-remover-seguindo-lista' : 'tab-bloquear-seguindo-lista');
+
+    const target = document.getElementById(targetId);
+    if(target) {
+        target.classList.add('active');
+        target.style.display = 'block';
+    }
+
+    updateConnectionIndicator(btn, screen);
+}
+
+function updateConnectionIndicator(activeBtn, screenEl) {
+    const screen = screenEl || document.querySelector('.screen.active');
+    if (!screen) return;
+    const ind = screen.querySelector('.connection-indicator');
+    if (activeBtn && ind) {
+        ind.style.width = activeBtn.offsetWidth + 'px';
+        ind.style.left = activeBtn.offsetLeft + 'px';
+    }
+}
+
+function switchBlockTab(evt, tabId) {
+    const screen = document.getElementById('screen-bloqueios');
+    if(!screen) return;
+    screen.querySelectorAll('.tab-conn-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.color = '#8e8e93';
+    });
+    screen.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+        content.style.display = 'none';
+    });
+
+    const btn = evt.currentTarget;
+    btn.classList.add('active');
+    btn.style.color = '#000';
+
+    const target = document.getElementById(tabId);
+    if(target) {
+        target.classList.add('active');
+        target.style.display = 'block';
+    }
+    updateBlockIndicator(btn);
+}
+
+function updateBlockIndicator(activeBtn) {
+    const screen = document.getElementById('screen-bloqueios');
+    if (!screen) return;
+    const ind = screen.querySelector('.block-indicator');
+    if (activeBtn && ind) {
+        ind.style.width = activeBtn.offsetWidth + 'px';
+        ind.style.left = activeBtn.offsetLeft + 'px';
+    }
+}
+
+/* Lógica das abas de Mensagens (Direct) */
+function switchMsgTab(evt, paneId) {
+    document.querySelectorAll('#screen-mensagens .tab-msg-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.fontWeight = '600';
+        btn.style.color = '#8e8e93';
+        btn.style.borderBottom = '2px solid transparent';
+    });
+
+    evt.currentTarget.classList.add('active');
+    evt.currentTarget.style.fontWeight = '700';
+    evt.currentTarget.style.color = '#000';
+    evt.currentTarget.style.borderBottom = '2px solid #000';
+
+    document.querySelectorAll('#screen-mensagens .tab-pane').forEach(pane => {
+        pane.classList.remove('active');
+        pane.style.display = 'none';
+    });
+
+    const target = document.getElementById(paneId);
+    if(target) {
+        target.classList.add('active');
+        target.style.display = 'block';
+    }
+}
+
+function renderMessagesUI() {
+    const convContainer = document.getElementById('tab-conversas-lista');
+    const reqContainer = document.getElementById('tab-solicitacoes-lista');
+    const reqBadge = document.getElementById('requestsBadgeCount');
+
+    if (convContainer) {
+        if (userConversations.length === 0) {
+            convContainer.innerHTML = `<div style="padding:60px 20px; text-align:center; color:#8e8e93; font-size:14px;">Nenhuma conversa ativa no momento.</div>`;
+        } else {
+            convContainer.innerHTML = userConversations.map(c => `
+                <div style="display:flex; align-items:center; padding:12px 16px; gap:12px; cursor:pointer;">
+                    <div style="width:50px; height:50px; border-radius:50%; background:#ddd; overflow:hidden;"><img src="${c.avatar || ''}" style="width:100%; height:100%; object-fit:cover;"></div>
+                    <div style="flex:1; display:flex; flex-direction:column; gap:2px;">
+                        <span style="font-weight:700; font-size:14px; color:#000;">${c.username}</span>
+                        <span style="font-size:13px; color:#8e8e93;">${c.lastMessage || 'Toque para conversar'}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+
+    if (reqContainer) {
+        if (userMessageRequests.length === 0) {
+            reqContainer.innerHTML = `<div style="padding:60px 20px; text-align:center; color:#8e8e93; font-size:14px;">Suas solicitações de mensagem aparecerão aqui.</div>`;
+            if (reqBadge) reqBadge.style.display = 'none';
+        } else {
+            if (reqBadge) {
+                reqBadge.style.display = 'inline-block';
+                reqBadge.textContent = userMessageRequests.length;
+            }
+            reqContainer.innerHTML = userMessageRequests.map(r => `
+                <div style="display:flex; align-items:center; padding:12px 16px; gap:12px;">
+                    <div style="width:50px; height:50px; border-radius:50%; background:#ddd; overflow:hidden;"><img src="${r.avatar || ''}" style="width:100%; height:100%; object-fit:cover;"></div>
+                    <div style="flex:1; display:flex; flex-direction:column; gap:2px;">
+                        <span style="font-weight:700; font-size:14px; color:#000;">${r.username}</span>
+                        <span style="font-size:13px; color:#8e8e93;">${r.message}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
 }
 
 function updateHomeSubnavIndicator() {
@@ -134,54 +323,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     updateProfileTabIndicator();
 
-    const createTabs = document.querySelectorAll('#screen-create .create-tab');
-    const indicator = document.getElementById('createTabIndicator');
-    const previewText = document.getElementById('previewText');
-
-    function updateCreateIndicator(activeTab, indEl) {
-        if(indEl && activeTab) {
-            indEl.style.width = activeTab.offsetWidth + 'px';
-            indEl.style.left = activeTab.offsetLeft + 'px';
-        }
-    }
-
-    createTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            createTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            selectedType = tab.dataset.type;
-            updateCreateIndicator(tab, indicator);
-            if(previewText) {
-                if(selectedType === 'post') previewText.textContent = 'Adicionar imagem ou vídeo feed';
-                else if(selectedType === 'story') previewText.textContent = 'Adicionar story';
-                else if(selectedType === 'viral') previewText.textContent = 'Adicionar feed viral';
-            }
-        });
-    });
-
-    const plusTabs = document.querySelectorAll('#screen-plus .create-tab');
-    const plusIndicator = document.getElementById('plusTabIndicator');
-    const plusPreviewText = document.getElementById('plusPreviewText');
-
-    plusTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            plusTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            selectedType = tab.dataset.type;
-            updateCreateIndicator(tab, plusIndicator);
-            if(plusPreviewText) {
-                if(selectedType === 'post') plusPreviewText.textContent = 'Faça um post no feed';
-                else if(selectedType === 'story') plusPreviewText.textContent = 'Adicionar story';
-                else if(selectedType === 'viral') plusPreviewText.textContent = 'Adicionar feed viral';
-            }
-        });
-    });
-
     setTimeout(() => {
-        const activeCreate = document.querySelector('#screen-create .create-tab.active');
-        if(activeCreate) updateCreateIndicator(activeCreate, indicator);
-        const activePlus = document.querySelector('#screen-plus .create-tab.active');
-        if(activePlus) updateCreateIndicator(activePlus, plusIndicator);
+        updateConnectionIndicator(document.querySelector('#screen-seguidores .tab-conn-btn.active'), document.getElementById('screen-seguidores'));
+        updateConnectionIndicator(document.querySelector('#screen-seguindo .tab-conn-btn.active'), document.getElementById('screen-seguindo'));
+        updateBlockIndicator(document.querySelector('#screen-bloqueios .tab-conn-btn.active'));
     }, 100);
 
     document.querySelectorAll('.nav button[data-go]').forEach(b => {
@@ -199,6 +344,8 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProfileGrid();
     renderHomeFeed();
     renderStoriesBar();
+    initEditProfile();
+    initShareProfile();
 });
 
 let selectedType = 'post', lastScreen = 'perfil', lastSource = 'perfil';
@@ -223,9 +370,6 @@ const imagePreview = document.getElementById('imagePreview');
 const videoPreview = document.getElementById('videoPreview');
 const emptyState = document.getElementById('emptyState');
 
-const plusImagePreview = document.getElementById('plusImagePreview');
-const plusVideoPreview = document.getElementById('plusVideoPreview');
-
 function handleFileSelection(file) {
     if (!file) return;
     mediaFile = file;
@@ -237,13 +381,9 @@ function handleFileSelection(file) {
         if(mediaType === 'image') {
             if(imagePreview) { imagePreview.src = e.target.result; imagePreview.style.display = 'block'; }
             if(videoPreview) videoPreview.style.display = 'none';
-            if(plusImagePreview) { plusImagePreview.src = e.target.result; plusImagePreview.style.display = 'block'; }
-            if(plusVideoPreview) plusVideoPreview.style.display = 'none';
         } else {
             if(videoPreview) { videoPreview.src = e.target.result; videoPreview.style.display = 'block'; }
             if(imagePreview) imagePreview.style.display = 'none';
-            if(plusVideoPreview) { plusVideoPreview.src = e.target.result; plusVideoPreview.style.display = 'block'; }
-            if(plusImagePreview) plusImagePreview.style.display = 'none';
         }
         setTimeout(() => {
             openCaptionModal(e.target.result);
@@ -283,71 +423,11 @@ if(storyDirectInput) {
     });
 }
 
-const advanceButton = document.getElementById('advanceButton');
-const advanceButtonBottom = document.getElementById('advanceButtonBottom');
-const plusAdvanceBtn = document.getElementById('plusAdvanceBtn');
-
-[advanceButton, advanceButtonBottom, plusAdvanceBtn].forEach(btn => {
-    btn?.addEventListener('click', () => {
-        if(!mediaFile) {
-            postInput.click();
-        } else {
-            const reader = new FileReader();
-            reader.onload = (e) => openCaptionModal(e.target.result);
-            reader.readAsDataURL(mediaFile);
-        }
-    });
-});
-
 function openCaptionModal(src) {
     const modalThumb = document.getElementById('modalThumb');
     if(modalThumb) modalThumb.src = src;
     go('caption');
 }
-
-const publishBtn = document.getElementById('publishBtn');
-const closeModalBtn = document.getElementById('closeModalBtn');
-const captionInput = document.getElementById('captionInput');
-
-closeModalBtn?.addEventListener('click', () => {
-    if (document.getElementById('screen-create').classList.contains('active')) {
-        go('perfil');
-    } else {
-        go('home');
-    }
-});
-
-publishBtn?.addEventListener('click', () => {
-    const caption = captionInput ? captionInput.value : '';
-    const src = document.getElementById('modalThumb').src;
-    const now = Date.now();
-
-    const newPostData = {
-        id: now,
-        src: src,
-        type: mediaType,
-        caption: caption,
-        user: currentUsername,
-        timestamp: now
-    };
-
-    if (selectedType === 'post') {
-        userPosts.unshift(newPostData);
-        localStorage.setItem('koneat_posts', JSON.stringify(userPosts));
-    } else if (selectedType === 'story') {
-        userStories.unshift(newPostData);
-        localStorage.setItem('koneat_stories', JSON.stringify(userStories));
-    } else if (selectedType === 'viral') {
-        userVirals.unshift(newPostData);
-        localStorage.setItem('koneat_virals', JSON.stringify(userVirals));
-    }
-
-    if(captionInput) captionInput.value = '';
-    mediaFile = null;
-    
-    alert('Publicado com sucesso!');
-    go('home');
-});
 
 function renderProfileGrid() {
     const grid = document.getElementById('perfilGrid');
@@ -488,70 +568,6 @@ function renderStoriesBar() {
     bar.innerHTML = html;
 }
 
-function viewStory(id) {
-    const story = userStories.find(s => s.id === id);
-    if(!story) return;
-
-    const modalId = 'storyViewerModal';
-    let modal = document.getElementById(modalId);
-    if(!modal) {
-        modal = document.createElement('div');
-        modal.id = modalId;
-        modal.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;display:flex;flex-direction:column;justify-content:space-between;padding:20px;color:#fff;";
-        document.body.appendChild(modal);
-    }
-
-    modal.innerHTML = `
-        <div style="display:flex;flex-direction:column;gap:8px;">
-            <div style="width:100%;height:3px;background:rgba(255,255,255,0.3);border-radius:2px;overflow:hidden;">
-                <div id="storyProgressBar" style="width:0%;height:100%;background:#fff;transition:width 30s linear;"></div>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;">
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <div style="width:32px;height:32px;border-radius:50%;overflow:hidden;background:#333;"><img src="${story.src}" style="width:100%;height:100%;object-fit:cover;"></div>
-                    <span style="font-weight:700;font-size:14px;">${story.user}</span>
-                </div>
-                <div style="display:flex;gap:12px;align-items:center;">
-                    <button onclick="deleteStory(${story.id})" style="background:none;border:none;cursor:pointer;font-size:18px;" title="Deletar Story">🗑️</button>
-                    <button onclick="closeStoryViewer()" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;">✕</button>
-                </div>
-            </div>
-        </div>
-        <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;margin:10px 0;">
-            <img src="${story.src}" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:12px;">
-        </div>
-        <div style="display:flex;align-items:center;gap:12px;">
-            <input type="text" placeholder="Enviar mensagem..." style="flex:1;background:transparent;border:1px solid rgba(255,255,255,0.4);border-radius:24px;padding:12px 16px;color:#fff;outline:none;">
-            <button style="background:none;border:none;cursor:pointer;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></button>
-        </div>
-    `;
-    modal.style.display = 'flex';
-
-    setTimeout(() => {
-        const bar = document.getElementById('storyProgressBar');
-        if(bar) bar.style.width = '100%';
-    }, 50);
-
-    window.storyTimeout = setTimeout(() => {
-        closeStoryViewer();
-    }, 30000);
-}
-
-function closeStoryViewer() {
-    const modal = document.getElementById('storyViewerModal');
-    if(modal) modal.style.display = 'none';
-    if(window.storyTimeout) clearTimeout(window.storyTimeout);
-}
-
-function deleteStory(id) {
-    if(confirm('Deseja apagar este story?')) {
-        userStories = userStories.filter(s => s.id !== id);
-        localStorage.setItem('koneat_stories', JSON.stringify(userStories));
-        closeStoryViewer();
-        renderStoriesBar();
-    }
-}
-
 function renderViralsFeed() {
     const container = document.getElementById('reelsContainer');
     if(!container) return;
@@ -576,37 +592,6 @@ function renderViralsFeed() {
     });
 }
 
-var loginForm = document.getElementById('loginForm');
-if(loginForm) {
-    loginForm.addEventListener('submit', e => {
-        e.preventDefault();
-        var emailInput = document.getElementById('loginEmail');
-        var em = emailInput ? emailInput.value.trim() : 'eributtler';
-        var nameFromEmail = em ? em.split('@')[0] : 'eributtler';
-        setUsername(nameFromEmail);
-        setTimeout(() => {
-            go('perfil');
-        }, 50);
-    });
-}
-
-var signupForm = document.getElementById('signupForm');
-if(signupForm) {
-    signupForm.addEventListener('submit', e => {
-        e.preventDefault();
-        var u = document.getElementById('cadUser').value.trim();
-        if (!u) { alert('Preencha o usuário.'); return; }
-        setUsername(u);
-        setTimeout(() => {
-            go('perfil');
-        }, 50);
-    });
-}
-
-/* ==========================================================
-   MÓDULO DE CONFIGURAÇÕES E BOTTOM-SHEETS
-   ========================================================== */
-
 function syncConfigUI() {
     const isPrivate = localStorage.getItem('koneat_private_account') === 'true';
     const notifEnabled = localStorage.getItem('koneat_notifications') !== 'false';
@@ -621,67 +606,6 @@ function syncConfigUI() {
     if (subtitlePrivate) subtitlePrivate.textContent = isPrivate ? 'Privada' : 'Pública';
     if (toggleNotif) toggleNotif.checked = notifEnabled;
     if (subtitleIdioma) subtitleIdioma.textContent = savedLang;
-
-    document.querySelectorAll('#sheetIdioma .lang-option').forEach(opt => {
-        opt.classList.toggle('selected', opt.dataset.lang === savedLang);
-    });
-}
-
-document.getElementById('togglePrivate')?.addEventListener('change', function () {
-    const isPriv = this.checked;
-    localStorage.setItem('koneat_private_account', isPriv ? 'true' : 'false');
-    const sub = document.getElementById('subtitlePrivate');
-    if (sub) sub.textContent = isPriv ? 'Privada' : 'Pública';
-    setUsername(currentUsername);
-    logActivity(isPriv ? 'Conta alterada para Privada' : 'Conta alterada para Pública');
-});
-
-document.getElementById('toggleNotif')?.addEventListener('change', function () {
-    localStorage.setItem('koneat_notifications', this.checked ? 'true' : 'false');
-    logActivity(this.checked ? 'Notificações ativadas' : 'Notificações desativadas');
-});
-
-document.getElementById('saveConfigBtn')?.addEventListener('click', () => {
-    logActivity('Configurações salvas');
-    alert('Alterações salvas com sucesso!');
-    go('perfil');
-});
-
-function openIdiomaSheet() {
-    document.getElementById('sheetIdioma')?.classList.add('show');
-}
-function closeIdiomaSheet() {
-    document.getElementById('sheetIdioma')?.classList.remove('show');
-}
-function selectIdioma(el) {
-    const lang = el.dataset.lang;
-    localStorage.setItem('koneat_language', lang);
-    document.querySelectorAll('#sheetIdioma .lang-option').forEach(opt => opt.classList.remove('selected'));
-    el.classList.add('selected');
-    const sub = document.getElementById('subtitleIdioma');
-    if (sub) sub.textContent = lang;
-    logActivity('Idioma alterado para ' + lang);
-    setTimeout(closeIdiomaSheet, 180);
-}
-
-function openDeleteSheet() {
-    const input = document.getElementById('deletePasswordInput');
-    if (input) input.value = '';
-    document.getElementById('sheetDelete')?.classList.add('show');
-}
-function closeDeleteSheet() {
-    document.getElementById('sheetDelete')?.classList.remove('show');
-}
-function confirmAccountDeletion() {
-    const pass = document.getElementById('deletePasswordInput')?.value.trim();
-    if (!pass) {
-        alert('Digite sua senha ou PIN atual para confirmar.');
-        return;
-    }
-    localStorage.clear();
-    closeDeleteSheet();
-    alert('Conta excluída definitivamente.');
-    go('login');
 }
 
 function syncAccountInfoUI() {
@@ -714,40 +638,52 @@ function syncActivitiesUI() {
     }
 }
 
-function logActivity(text) {
-    const history = JSON.parse(localStorage.getItem('koneat_history') || '[]');
-    history.unshift({ text, date: 'Agora' });
-    localStorage.setItem('koneat_history', JSON.stringify(history.slice(0, 15)));
-}
+function initEditProfile() {
+  const editName = document.getElementById("editName");
+  const editUsername = document.getElementById("editUsername");
+  const editBio = document.getElementById("editBio");
+  const saveBtn = document.getElementById("saveProfileBtn");
+  if (!editName || !saveBtn) return;
 
-function clearActivityHistory() {
-    if (confirm('Deseja limpar todo o histórico de atividades?')) {
-        localStorage.setItem('koneat_history', '[]');
-        syncActivitiesUI();
-    }
-}
+  editName.value = localStorage.getItem("koneat_name") || "";
+  editUsername.value = (localStorage.getItem("koneat_username") || "").replace("@","").toLowerCase();
+  editBio.value = localStorage.getItem("koneat_bio") || "";
 
-document.getElementById('saveProfileBtn')?.addEventListener('click', () => {
-    const name = document.getElementById('editName')?.value.trim();
-    const username = document.getElementById('editUsername')?.value.trim().replace('@', '');
-    const bio = document.getElementById('editBio')?.value.trim();
-    const birth = document.getElementById('editBirth')?.value;
-    const gender = document.getElementById('editGender')?.value.trim();
+  saveBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    localStorage.setItem("koneat_name", editName.value.trim());
+    localStorage.setItem("koneat_username", editUsername.value.trim().replace("@","").toLowerCase());
+    localStorage.setItem("koneat_bio", editBio.value.trim());
 
-    if (username) setUsername(username);
-    if (document.getElementById('profileName')) document.getElementById('profileName').textContent = name || '';
-    if (document.getElementById('profileBio')) document.getElementById('profileBio').textContent = bio || '';
-
-    localStorage.setItem('koneat_profile', JSON.stringify({
-        name: name || 'Usuário Koneat',
-        username: username || currentUsername,
-        bio: bio || '',
-        birth: birth || 'Not provided',
-        gender: gender || 'Not informed'
-    }));
-
-    logActivity('Configurações de perfil atualizadas');
-    alert('Perfil atualizado!');
+    if (editUsername.value) setUsername(editUsername.value);
+    alert('Perfil atualizado com sucesso!');
     go('perfil');
-});
+  });
+}
 
+function initShareProfile() {
+  const btn = document.getElementById("btnShareProfile");
+  if (!btn) return;
+
+  btn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const username = (localStorage.getItem("koneat_username") || currentUsername || "erivelto777silva").replace("@","").trim();
+    const shareData = {
+      title: "Confira meu perfil no Koneat!",
+      text: "Confira meu perfil no Koneat!",
+      url: window.location.origin + window.location.pathname + "?u=" + username
+    };
+
+    if (navigator.share) {
+      try { await navigator.share(shareData); } catch (e) {}
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareData.text + " " + shareData.url);
+      alert("Link do perfil copiado!");
+    } catch (e) {
+      prompt("Copie o link do seu perfil:", shareData.url);
+    }
+  });
+}
