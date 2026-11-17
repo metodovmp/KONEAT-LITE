@@ -28,7 +28,7 @@ button{font-family:inherit;cursor:pointer}
 .links a{text-decoration:underline;text-underline-offset:4px;cursor:pointer}
 .copy{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:11px;color:#666}
 
-/* NAV BAR */
+/* NAV BAR - ORDEM CERTA: HOME -> PLUS -> VIDEO -> PERFIL */
 .nav{width:100%;height:68px;background:#111;margin:0;border-radius:0;display:flex;align-items:center;justify-content:space-around;flex-shrink:0;padding:0;z-index:999}
 .nav button{width:58px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;flex-shrink:0;transition:background .18s}
 .nav button svg{width:28px!important;height:28px!important;min-width:28px;min-height:28px;max-width:28px;max-height:28px;stroke:#fff;flex-shrink:0}
@@ -134,7 +134,7 @@ button{font-family:inherit;cursor:pointer}
 .post-caption-author{font-weight:600;margin-right:6px}
 .empty-home-feed{text-align:center;padding:60px 20px;color:#8e8e93;font-size:14px;line-height:1.5}
 
-/* CRIAR / VÍDEO */
+/* CRIAR / PLUS / VÍDEO */
 .create-screen{background:#000;color:#fff}
 .create-header{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:#000;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.12)}
 .close-link{width:40px;height:100%;display:flex;align-items:center;justify-content:flex-start;color:#fff;background:none;border:none;font-size:26px;font-weight:300;cursor:pointer}
@@ -195,11 +195,9 @@ button{font-family:inherit;cursor:pointer}
 #screen-config, #screen-atividades, #screen-informacoes-conta, #screen-ajuda, #screen-privacidade, #screen-termos, #screen-edit-profile, #screen-seguidores, #screen-seguindo, #screen-bloqueios, #screen-mensagens {
     background: #ffffff;
 }
-
 #screen-config, #screen-atividades, #screen-informacoes-conta, #screen-ajuda, #screen-mensagens {
     background: #f6f7f9;
 }
-
 .config-header {
     display: flex;
     align-items: center;
@@ -224,7 +222,6 @@ button{font-family:inherit;cursor:pointer}
     color: #000;
     letter-spacing: -0.5px;
 }
-
 .activity-header, .account-info-header, .help-header, .legal-header, .edit-header, .connections-header, .blocks-header, .messages-header {
     display: flex;
     align-items: center;
@@ -247,7 +244,6 @@ button{font-family:inherit;cursor:pointer}
     font-weight: 700;
     cursor: pointer;
 }
-
 .config-list {
     flex: 1;
     overflow-y: auto;
@@ -288,7 +284,6 @@ button{font-family:inherit;cursor:pointer}
     color: #8e8e93;
     font-weight: 400;
 }
-
 .icon-circle {
     width: 40px;
     height: 40px;
@@ -307,7 +302,6 @@ button{font-family:inherit;cursor:pointer}
 .bg-teal { background-color: #3b8ea5; }
 .bg-red { background-color: #e04f44; }
 .bg-help { background-color: #5b6e8c; }
-
 .switch {
     position: relative;
     display: inline-block;
@@ -329,7 +323,6 @@ button{font-family:inherit;cursor:pointer}
 }
 input:checked + .slider { background-color: #4a89dc; }
 input:checked + .slider:before { transform: translateX(22px); }
-
 .config-footer-bar {
     padding: 10px 20px 20px;
     display: flex;
@@ -348,8 +341,6 @@ input:checked + .slider:before { transform: translateX(22px); }
     box-shadow: 0 4px 12px rgba(11, 99, 209, 0.25);
     cursor: pointer;
 }
-
-/* SEGUIDORES, SEGUINDO E BLOQUEIOS (ESTILOS ESPECÍFICOS & INDICADORES DESLIZANTES) */
 .search-bar-container {
     padding: 12px 16px;
     background: #ffffff;
@@ -440,10 +431,6 @@ input:checked + .slider:before { transform: translateX(22px); }
     font-weight: 600;
     cursor: pointer;
 }
-
-/* ==========================================================
-   ESTILOS ESPECÍFICOS DA TELA DE MENSAGENS (DIRECT)
-   ========================================================== */
 .tabs-messages {
     display: flex;
     position: relative;
@@ -466,8 +453,6 @@ input:checked + .slider:before { transform: translateX(22px); }
 .tab-pane.active {
     display: block;
 }
-
-/* BOTTOM-SHEETS */
 .sheet-backdrop {
     position: absolute;
     inset: 0;
@@ -585,8 +570,6 @@ input:checked + .slider:before { transform: translateX(22px); }
     margin-top: 10px;
     cursor: pointer;
 }
-
-/* SUBTELAS */
 .section-title { font-size: 16px; font-weight: 800; color: #111; margin-bottom: 12px; }
 .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .stat-card {
@@ -695,3 +678,46 @@ input:checked + .slider:before { transform: translateX(22px); }
     accent-color: #0b63d1;
 }
 
+/* ==========================================================
+   TRAVA FINAL - PLUS x CRIAR DO PERFIL x VIDEO (NÃO MISTURAR)
+   Ordem certa: Home -> Plus -> Video -> Perfil
+   ========================================================== */
+
+/* PLUS: Avançar SÓ embaixo, NUNCA em cima */
+#screen-plus .create-subbar .btn-avancar{
+  display:none !important;
+}
+#screen-plus .create-bottom-bar{
+  display:flex !important;
+}
+#screen-plus #plusAdvanceBtn{
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+}
+/* Plus sempre com nav embaixo */
+#screen-plus .nav{
+  display:flex !important;
+}
+
+/* CRIAR DO PERFIL: Avançar SÓ em cima, NUNCA embaixo, SEM nav */
+#screen-create .create-bottom-bar{
+  display:none !important;
+}
+#screen-create #advanceButton{
+  display:flex !important;
+}
+#screen-create #advanceButtonBottom{
+  display:none !important;
+}
+#screen-create .nav{
+  display:none !important;
+}
+
+/* 3ª NAVEGAÇÃO - VÍDEO: nunca mostra Avançar / Galeria / Criar */
+#screen-video .btn-avancar,
+#screen-video .btn-avancar-pill,
+#screen-video .create-bottom-bar,
+#screen-video .create-subbar{
+  display:none !important;
+}
