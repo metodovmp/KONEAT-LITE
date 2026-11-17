@@ -70,7 +70,7 @@
 <header class="profile-header">
     <div class="header-username" id="headerUsername">eributtler</div>
     <div class="header-actions">
-        <div class="msg-bubble"><i></i><i></i><i></i></div>
+        <div class="msg-bubble" onclick="go('mensagens')" style="cursor:pointer;" title="Mensagens"><i></i><i></i><i></i></div>
         <div style="position:relative">
             <button id="menuBtn" style="background:none;border:none;color:#000;cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg></button>
             <div class="dropdown" id="dropdownMenu">
@@ -88,11 +88,15 @@
         <div class="cam" onclick="document.getElementById('avatarInput').click()"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></div>
         <input type="file" id="avatarInput" accept="image/*" hidden>
     </div>
-    <div class="stats"><div><b id="countPosts">0</b><span>posts</span></div><div><b>0</b><span>seguidores</span></div><div><b>0</b><span>seguindo</span></div></div>
+    <div class="stats">
+        <div><b id="countPosts">0</b><span>posts</span></div>
+        <div onclick="openFollowersScreen()" style="cursor:pointer;"><b id="countFollowers">0</b><span>seguidores</span></div>
+        <div onclick="openFollowingScreen()" style="cursor:pointer;"><b id="countFollowing">0</b><span>seguindo</span></div>
+    </div>
 </div>
 
 <div class="user-details user-details-block"><p id="profileName" style="font-weight:700; font-size:15px; margin-bottom:2px;"></p><p id="profileBio"></p></div>
-<div class="p-actions"><button onclick="go('editar-perfil')">Editar perfil</button><button>Compartilhar perfil</button></div>
+<div class="p-actions"><button onclick="go('editar-perfil')">Editar perfil</button><button id="btnShareProfile">Compartilhar perfil</button></div>
 
 <div class="p-tabs-wrapper">
     <nav class="p-tabs">
@@ -124,6 +128,174 @@
 <nav class="nav"><button data-go="home"><svg viewBox="0 0 24 24"><path d="M12 2.8 L21 10.8 V20 a1 1 0 0 1 -1 1 H15 V14.6 a1 1 0 0 0 -1 -1 H10 a1 1 0 0 0 -1 1 V21 H4 a1 1 0 0 1 -1 -1 V10.8 Z"/></svg></button><button data-go="plus"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg></button><button data-go="video"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M10 9l5 3-5 3z"/></svg></button><button data-go="perfil"><span class="nav-profile"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 20c0-3 3.5-5 8-5s8 2 8 5v1H4z"/></svg><img alt=""></span></button></nav>
 </section>
 
+<!-- ================= TELA: MENSAGENS (DIRECT) ================= -->
+<section id="screen-mensagens" class="screen" style="background:#fff;">
+    <header style="display:flex; align-items:center; justify-content:space-between; padding:14px 16px; background:#fff; border-bottom:1px solid #f0f0f0;">
+        <button onclick="go('perfil')" style="background:none; border:none; cursor:pointer; display:flex; padding:0;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <span id="messagesCurrentUsername" style="font-size:17px; font-weight:700; color:#000;">@eributtler</span>
+        <button style="background:none; border:none; cursor:pointer; padding:0; display:flex;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+        </button>
+    </header>
+
+    <div style="padding:12px 16px; background:#fff;">
+        <div style="position:relative; display:flex; align-items:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="2" style="position:absolute; left:14px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" placeholder="Pesquisar" style="width:100%; padding:10px 16px 10px 40px; border-radius:20px; border:1px solid #dbdbdb; background:#fafafa; font-size:14px; outline:none;">
+        </div>
+    </div>
+
+    <div style="display:flex; border-bottom:1px solid #efefef; background:#fff;">
+        <button class="tab-msg-btn active" onclick="switchMsgTab(event, 'pane-conversas')" style="flex:1; padding:12px 0; text-align:center; background:none; border:none; font-size:14px; font-weight:700; color:#000; border-bottom:2px solid #000;">Conversas</button>
+        <button class="tab-msg-btn" onclick="switchMsgTab(event, 'pane-solicitacoes')" style="flex:1; padding:12px 0; text-align:center; background:none; border:none; font-size:14px; font-weight:600; color:#8e8e93; border-bottom:2px solid transparent;">Solicitações</button>
+    </div>
+
+    <div style="flex:1; overflow-y:auto;">
+        <div id="pane-conversas" class="tab-pane active" style="display:block;">
+            <div onclick="go('chat-detalhe')" style="display:flex; align-items:center; gap:12px; padding:12px 16px; cursor:pointer;">
+                <div style="width:48px; height:48px; border-radius:50%; background:#000; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px;">K</div>
+                <div style="flex:1; display:flex; flex-direction:column; gap:2px;">
+                    <span style="font-size:14px; font-weight:700; color:#000;">KONEAT</span>
+                    <span style="font-size:13px; color:#8e8e93;">Sempre por aqui! 🤝 Equipe KONEAT.</span>
+                </div>
+            </div>
+        </div>
+        <div id="pane-solicitacoes" class="tab-pane" style="display:none; padding:80px 20px; text-align:center; color:#8e8e93; font-size:14px;">
+            Nenhuma solicitação de mensagem no momento.
+        </div>
+    </div>
+</section>
+
+<!-- ================= TELA: CHAT INDIVIDUAL ================= -->
+<section id="screen-chat-detalhe" class="screen" style="background:#fff;">
+    <header style="display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:#fff; border-bottom:1px solid #f0f0f0;">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <button onclick="go('mensagens')" style="background:none; border:none; cursor:pointer; display:flex; padding:0;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:36px; height:36px; border-radius:50%; background:#000; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px;">K</div>
+                <div>
+                    <div style="display:flex; align-items:center; gap:4px; font-size:15px; font-weight:700; color:#000;">
+                        KONEAT <svg width="14" height="14" viewBox="0 0 24 24" fill="#0095f6"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+                    </div>
+                    <span style="font-size:11px; color:#8e8e93;">Online há 2 h</span>
+                </div>
+            </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:16px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            <button onclick="openBloqueiosFrom('atividades')" style="background:none; border:none; cursor:pointer; display:flex; padding:0;" title="Opções e Bloqueio">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <div style="flex:1; display:flex; align-items:center; justify-content:center; color:#8e8e93; font-size:14px; padding:20px; text-align:center;">
+        Suas mensagens aparecerão aqui.
+    </div>
+
+    <div style="padding:12px 16px; background:#fff; border-top:1px solid #f0f0f0; display:flex; align-items:center; gap:10px;">
+        <div style="width:38px; height:38px; border-radius:50%; background:#000; color:#fff; display:flex; align-items:center; justify-content:center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <input type="text" placeholder="Mensagem..." style="flex:1; height:42px; border:1px solid #dbdbdb; border-radius:21px; padding:0 16px; font-size:14px; outline:none; background:#fafafa;">
+        <button style="background:none; border:none; font-weight:700; color:#0095f6; cursor:pointer; font-size:14px;">Enviar</button>
+    </div>
+</section>
+
+<!-- ================= TELA: SEGUIDORES ================= -->
+<section id="screen-seguidores" class="screen" style="background:#fff;">
+    <header class="connections-header" style="display:flex; align-items:center; gap:16px; padding:16px 20px; background:#fff; border-bottom:1px solid #f0f0f0;">
+        <button class="icon-btn" onclick="goBackFromConnections()" style="background:none; border:none; cursor:pointer; display:flex;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <h1 id="seguidoresUsernameTitle" style="font-size:18px; font-weight:700; margin:0;">@eributtler</h1>
+    </header>
+
+    <div class="search-bar-container" style="padding:12px 16px; background:#fff;">
+        <div class="search-wrapper" style="position:relative; display:flex; align-items:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="2" style="position:absolute; left:14px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="search-input" placeholder="Encontre pessoas" style="width:100%; padding:10px 16px 10px 40px; border-radius:20px; border:1px solid #dbdbdb; background:#fafafa; font-size:14px; outline:none;">
+        </div>
+    </div>
+
+    <div class="tabs-connections" style="display:flex; border-bottom:1px solid #efefef; background:#fff;">
+        <button class="tab-conn-btn active" style="flex:1; padding:14px 0; background:none; border:none; font-size:14px; font-weight:600; border-bottom:2px solid #000;">Seguidores</button>
+        <button class="tab-conn-btn" style="flex:1; padding:14px 0; background:none; border:none; font-size:14px; font-weight:600; color:#8e8e93; border-bottom:2px solid transparent;">Remover</button>
+        <button class="tab-conn-btn" onclick="openBloqueiosFrom('seguidores')" style="flex:1; padding:14px 0; background:none; border:none; font-size:14px; font-weight:600; color:#8e8e93; border-bottom:2px solid transparent;">Bloquear</button>
+    </div>
+
+    <div style="flex:1; overflow-y:auto; padding:80px 20px; text-align:center; color:#8e8e93; font-size:14px;">
+        Seus seguidores aparecerão aqui.
+    </div>
+</section>
+
+<!-- ================= TELA: SEGUINDO ================= -->
+<section id="screen-seguindo" class="screen" style="background:#fff;">
+    <header class="connections-header" style="display:flex; align-items:center; gap:16px; padding:16px 20px; background:#fff; border-bottom:1px solid #f0f0f0;">
+        <button class="icon-btn" onclick="goBackFromConnections()" style="background:none; border:none; cursor:pointer; display:flex;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <h1 id="seguindoUsernameTitle" style="font-size:18px; font-weight:700; margin:0;">@eributtler</h1>
+    </header>
+
+    <div class="search-bar-container" style="padding:12px 16px; background:#fff;">
+        <div class="search-wrapper" style="position:relative; display:flex; align-items:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="2" style="position:absolute; left:14px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="search-input" placeholder="Encontre pessoas" style="width:100%; padding:10px 16px 10px 40px; border-radius:20px; border:1px solid #dbdbdb; background:#fafafa; font-size:14px; outline:none;">
+        </div>
+    </div>
+
+    <div class="tabs-connections" style="display:flex; border-bottom:1px solid #efefef; background:#fff;">
+        <button class="tab-conn-btn active" style="flex:1; padding:14px 0; background:none; border:none; font-size:14px; font-weight:600; border-bottom:2px solid #000;">Seguindo</button>
+        <button class="tab-conn-btn" style="flex:1; padding:14px 0; background:none; border:none; font-size:14px; font-weight:600; color:#8e8e93; border-bottom:2px solid transparent;">Remover</button>
+        <button class="tab-conn-btn" onclick="openBloqueiosFrom('seguindo')" style="flex:1; padding:14px 0; background:none; border:none; font-size:14px; font-weight:600; color:#8e8e93; border-bottom:2px solid transparent;">Bloquear</button>
+    </div>
+
+    <div style="flex:1; overflow-y:auto; padding:80px 20px; text-align:center; color:#8e8e93; font-size:14px;">
+        Você ainda não segue ninguém[span_0](start_span)[span_0](end_span)[span_1](start_span)[span_1](end_span)[span_2](start_span)[span_2](end_span).
+    </div>
+</section>
+
+<!-- ================= TELA: BLOQUEIOS ================= -->
+<section id="screen-bloqueios" class="screen" style="background:#fff;">
+    <header class="blocks-header" style="display:flex; align-items:center; gap:16px; padding:16px 20px; background:#fff; border-bottom:1px solid #f0f0f0;">
+        <button class="icon-btn" onclick="goBackFromBlocks()" style="background:none; border:none; cursor:pointer; display:flex;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <h1 style="font-size:18px; font-weight:700; margin:0;">Contas Bloqueadas[span_3](start_span)[span_3](end_span)</h1>
+    </header>
+
+    <div class="tabs-connections" style="display:flex; border-bottom:1px solid #efefef; background:#fff;">
+        <button class="tab-conn-btn active" onclick="switchBlockTab(event, 'tab-bloqueadas')" style="flex:1; padding:14px 0; background:none; border:none; font-size:14px; font-weight:600; border-bottom:2px solid #000;">Bloqueadas[span_4](start_span)[span_4](end_span)</button>
+        <button class="tab-conn-btn" onclick="switchBlockTab(event, 'tab-restritas')" style="flex:1; padding:14px 0; background:none; border:none; font-size:14px; font-weight:600; color:#8e8e93; border-bottom:2px solid transparent;">Restritas[span_5](start_span)[span_5](end_span)</button>
+    </div>
+
+    <div class="search-bar-container" style="padding:12px 16px; background:#fff;">
+        <div class="search-wrapper" style="position:relative; display:flex; align-items:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="2" style="position:absolute; left:14px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="search-input" placeholder="Pesquisar contas" style="width:100%; padding:10px 16px 10px 40px; border-radius:20px; border:1px solid #dbdbdb; background:#fafafa; font-size:14px; outline:none;">
+        </div>
+    </div>
+
+    <div style="flex:1; overflow-y:auto;">
+        <div id="tab-bloqueadas" class="tab-content active" style="padding:20px; text-align:center; color:#8e8e93; font-size:14px;">
+            Nenhuma conta bloqueada[span_6](start_span)[span_6](end_span).
+        </div>
+        <div id="tab-restritas" class="tab-content" style="display:none; padding:20px; text-align:center; color:#8e8e93; font-size:14px;">
+            Nenhuma conta restrita.
+        </div>
+    </div>
+
+    <div class="bottom-save-container" style="padding:12px 16px; background:#fff; border-top:1px solid #efefef;">
+        <button class="btn-save-main" onclick="goBackFromBlocks()" style="width:100%; height:42px; background:#efefef; border:none; border-radius:8px; color:#000; font-size:14px; font-weight:600; cursor:pointer;">Guardar alterações[span_7](start_span)[span_7](end_span)</button>
+    </div>
+</section>
+
 <!-- ================= TELA: CONFIGURAÇÕES ================= -->
 <section id="screen-config" class="screen">
     <header class="config-header">
@@ -133,7 +305,7 @@
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
             </button>
             <div class="config-header-divider"></div>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
         </div>
     </header>
 
@@ -267,11 +439,11 @@
 
         <div style="margin-top:22px;">
             <h2 class="section-title">Segurança e Comunidade</h2>
-            <div class="config-card" style="box-shadow:none; border:1px solid #efefef;">
+            <div class="config-card" onclick="openBloqueiosFrom('atividades')" style="box-shadow:none; border:1px solid #efefef; cursor:pointer;">
                 <div class="config-card-left">
                     <span style="font-size:18px;">🚫</span>
                     <div class="config-card-info">
-                        <span class="config-card-title" style="font-size:15px;">Contas Bloqueadas / Restritas</span>
+                        <span class="config-card-title" style="font-size:15px;">Contas Bloqueadas / Restritas[span_8](start_span)[span_8](end_span)</span>
                         <span class="config-card-subtitle">0 usuários bloqueados</span>
                     </div>
                 </div>
@@ -351,7 +523,7 @@
     </main>
 </section>
 
-<!-- ================= TELA: POLÍTICA DE PRIVACIDADE (ORIGINAL DO GITHUB) ================= -->
+<!-- ================= TELA: POLÍTICA DE PRIVACIDADE ================= -->
 <section id="screen-privacidade" class="screen">
     <header class="legal-header">
         <button class="icon-btn" onclick="goBackFromLegal()" aria-label="Voltar" style="background:none;border:none;cursor:pointer;display:flex;">
@@ -380,7 +552,7 @@
     </div>
 </section>
 
-<!-- ================= TELA: TERMOS E POLÍTICAS (ORIGINAL DO GITHUB) ================= -->
+<!-- ================= TELA: TERMOS E POLÍTICAS ================= -->
 <section id="screen-termos" class="screen">
     <header class="legal-header">
         <button class="icon-btn" onclick="goBackFromLegal()" aria-label="Voltar" style="background:none;border:none;cursor:pointer;display:flex;">
@@ -389,7 +561,6 @@
         <h1 class="legal-title">Termos e Políticas</h1>
     </header>
     <main style="overflow-y:auto; flex:1; padding:20px;">
-        <!-- 1. Termos de Uso -->
         <section class="legal-section">
             <h2>TERMOS DE USO — KONEAT WORD</h2>
             <p>Bem-vindo ao KONEAT Word, uma rede social criada para conectar pessoas, compartilhar conteúdos e promover interações em um ambiente seguro e respeitoso.</p>
@@ -402,8 +573,6 @@
                 <li><strong>Atualizações:</strong> Estes Termos poderão ser atualizados para acompanhar mudanças na plataforma, na legislação e nas medidas de segurança.</li>
             </ol>
         </section>
-
-        <!-- 2. Diretrizes da Comunidade -->
         <section class="legal-section">
             <h2>DIRETRIZES DA COMUNIDADE</h2>
             <p>O KONEAT Word valoriza a liberdade de expressão, o respeito e a convivência entre pessoas com opiniões diferentes.</p>
@@ -417,8 +586,6 @@
                 <li>Conteúdos que incentivem atividades ilegais ou violem os direitos de terceiros.</li>
             </ul>
         </section>
-
-        <!-- 3. Política de Conteúdo -->
         <section class="legal-section">
             <h2>POLÍTICA DE CONTEÚDO E SEGURANÇA</h2>
             <p>Para proteger a comunidade, o KONEAT Word não permite a publicação, distribuição ou promoção de determinados conteúdos proibidos:</p>
@@ -430,8 +597,6 @@
                 <li>Spam, solicitações fraudulentas e manipulação de métricas.</li>
             </ol>
         </section>
-
-        <!-- 4. Política de Publicidade -->
         <section class="legal-section">
             <h2>POLÍTICA DE PUBLICIDADE</h2>
             <p>O KONEAT Word permite campanhas publicitárias e ações comerciais autorizadas, com o objetivo de conectar empresas, profissionais, marcas e público.</p>
@@ -448,21 +613,74 @@
 </section>
 
 <!-- ================= TELA: EDITAR PERFIL ================= -->
-<section id="screen-editar-perfil" class="screen">
-    <header class="config-header">
-        <h1 class="config-title">Editar Perfil</h1>
-        <button class="icon-btn" onclick="go('perfil')" style="background:none;border:none;cursor:pointer;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        </button>
+<section id="screen-edit-profile" class="screen">
+  <div class="app-container" style="padding-bottom:20px; height:100%; display:flex; flex-direction:column; overflow-y:auto;">
+    <header class="edit-header">
+      <button type="button" class="icon-btn" id="closeEditProfileBtn" aria-label="Fechar" style="background:none;border:none;cursor:pointer;display:flex;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <h1 class="edit-title">Editar perfil</h1>
+      <button type="button" class="btn-save-top" id="saveProfileBtn">Salvar</button>
     </header>
-    <main style="padding:20px; display:flex; flex-direction:column; gap:14px; flex:1; overflow-y:auto;">
-        <div class="field"><label style="color:#000;">Nome</label><div class="input" style="border-color:#ccc;"><input type="text" id="editName" placeholder="Seu nome" style="color:#000;"></div></div>
-        <div class="field"><label style="color:#000;">Nome de usuário</label><div class="input" style="border-color:#ccc;"><input type="text" id="editUsername" placeholder="@usuario" style="color:#000;"></div></div>
-        <div class="field"><label style="color:#000;">Biografia</label><div class="input" style="border-color:#ccc;"><input type="text" id="editBio" placeholder="Sua bio" style="color:#000;"></div></div>
-        <div class="field"><label style="color:#000;">Data de nascimento</label><div class="input" style="border-color:#ccc;"><input type="date" id="editBirth" style="color:#000;"></div></div>
-        <div class="field"><label style="color:#000;">Gênero</label><div class="input" style="border-color:#ccc;"><input type="text" id="editGender" placeholder="Ex: Masculino, Feminino" style="color:#000;"></div></div>
-        <button type="button" class="btn-main" id="saveProfileBtn" style="background:#0066ff; color:#fff;">Salvar Perfil</button>
-    </main>
+
+    <form class="edit-profile-form" id="editProfileForm" style="padding: 16px;">
+      <div class="edit-avatar-section" style="display:flex; flex-direction:column; align-items:center; margin-bottom: 20px;">
+        <div class="edit-avatar-circle" style="position:relative; width:84px; height:84px; border-radius:50%; background:#f2f2f2; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <div class="camera-overlay" style="position:absolute; inset:0; background:rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          </div>
+        </div>
+        <p class="change-photo-text" style="font-size:13px; font-weight:600; color:#0b63d1; margin-top:8px; cursor:pointer;">Adicionar ou alterar foto</p>
+      </div>
+
+      <div class="edit-card-group" style="margin-bottom:14px;">
+        <label for="editName" style="font-size:12px; font-weight:700; color:#8e8e93; display:block; margin-bottom:4px;">Nome</label>
+        <input type="text" id="editName" placeholder="Escreva seu nome..." style="width:100%; height:46px; border:1px solid #ddd; border-radius:12px; padding:0 14px; font-size:14px; outline:none; background:#fafafa;">
+      </div>
+
+      <div class="edit-card-group" style="margin-bottom:14px;">
+        <label for="editUsername" style="font-size:12px; font-weight:700; color:#8e8e93; display:block; margin-bottom:4px;">Nome de usuário</label>
+        <input type="text" id="editUsername" placeholder="Escreva seu nome..." style="width:100%; height:46px; border:1px solid #ddd; border-radius:12px; padding:0 14px; font-size:14px; outline:none; background:#fafafa;">
+      </div>
+
+      <div class="edit-card-group" style="margin-bottom:14px;">
+        <label for="editBio" style="font-size:12px; font-weight:700; color:#8e8e93; display:block; margin-bottom:4px;">Sobre mim</label>
+        <textarea id="editBio" rows="2" placeholder="Escreva algo sobre você..." style="width:100%; border:1px solid #ddd; border-radius:12px; padding:10px 14px; font-size:14px; outline:none; background:#fafafa; resize:none;"></textarea>
+      </div>
+
+      <div class="edit-card-group" style="margin-bottom:14px;">
+        <label for="editBirth" style="font-size:12px; font-weight:700; color:#8e8e93; display:block; margin-bottom:4px;">Data de nascimento</label>
+        <input type="text" id="editBirth" placeholder="DD/MM/AAAA" style="width:100%; height:46px; border:1px solid #ddd; border-radius:12px; padding:0 14px; font-size:14px; outline:none; background:#fafafa;">
+        <span class="private-info-hint" style="font-size:11px; color:#8e8e93; margin-top:2px; display:block;">Somente você pode ver isso</span>
+      </div>
+
+      <div class="edit-card-group" style="margin-bottom:18px;">
+        <label for="editGender" style="font-size:12px; font-weight:700; color:#8e8e93; display:block; margin-bottom:4px;">Gênero</label>
+        <input type="text" id="editGender" placeholder="Masculino ou feminino" style="width:100%; height:46px; border:1px solid #ddd; border-radius:12px; padding:0 14px; font-size:14px; outline:none; background:#fafafa;">
+        <span class="private-info-hint" style="font-size:11px; color:#8e8e93; margin-top:2px; display:block;">Somente você pode ver isso</span>
+      </div>
+
+      <div class="edit-links-list" style="background:#fff; border:1px solid #eee; border-radius:16px; overflow:hidden;">
+        <div class="edit-link-item" id="btnOpenContato" style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; cursor:pointer; border-bottom:1px solid #f2f2f2;">
+          <span style="font-size:14px; font-weight:600; color:#111;">Contato</span>
+          <div class="link-right" style="display:flex; align-items:center; gap:8px;"><span class="link-count" id="countContato" style="font-size:13px; color:#8e8e93;">0</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+        </div>
+        <div class="edit-link-item" id="btnOpenLink" style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; cursor:pointer; border-bottom:1px solid #f2f2f2;">
+          <span style="font-size:14px; font-weight:600; color:#111;">Link</span>
+          <div class="link-right" style="display:flex; align-items:center; gap:8px;"><span class="link-count" id="countLink" style="font-size:13px; color:#8e8e93;">0</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+        </div>
+        <div class="edit-link-item" id="btnOpenLocal" style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; cursor:pointer; border-bottom:1px solid #f2f2f2;">
+          <span style="font-size:14px; font-weight:600; color:#111;">Localização</span>
+          <div class="link-right" style="display:flex; align-items:center; gap:8px;"><span class="link-count" id="countLocal" style="font-size:13px; color:#8e8e93;">0</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+        </div>
+        <div class="edit-link-item" id="btnOpenConfig" style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; cursor:pointer;">
+          <span style="font-size:14px; font-weight:600; color:#111;">Configurações de informações pessoais</span>
+          <div class="link-right" style="display:flex; align-items:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+        </div>
+      </div>
+    </form>
+  </div>
 </section>
 
 <!-- ================= TELA: CRIAR (EXCLUSIVO PERFIL) ================= -->
@@ -547,4 +765,3 @@
 <script src="js/app.js"></script>
 </body>
 </html>
-
