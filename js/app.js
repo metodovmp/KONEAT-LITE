@@ -18,7 +18,22 @@ function setUsername(name) {
     }
 }
 
+/* ==========================================================
+   ROTEAMENTO SPA INTELIGENTE (COM SUPORTE A PRIVACIDADE/TERMOS)
+   ========================================================== */
+let legalReturnScreen = 'config';
+
 function go(n) {
+    // Se o usuário está indo para as telas legais, guarda de onde ele veio (perfil ou config)
+    if (n === 'privacidade' || n === 'termos') {
+        const activeScreen = document.querySelector('.screen.active');
+        if (activeScreen && activeScreen.id === 'screen-perfil') {
+            legalReturnScreen = 'perfil';
+        } else {
+            legalReturnScreen = 'config';
+        }
+    }
+
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     var el = document.getElementById('screen-' + n);
     if (el) el.classList.add('active');
@@ -62,6 +77,10 @@ function go(n) {
     } else if (n === 'atividades') {
         syncActivitiesUI();
     }
+}
+
+function goBackFromLegal() {
+    go(legalReturnScreen || 'config');
 }
 
 function updateHomeSubnavIndicator() {
@@ -731,3 +750,4 @@ document.getElementById('saveProfileBtn')?.addEventListener('click', () => {
     alert('Perfil atualizado!');
     go('perfil');
 });
+
