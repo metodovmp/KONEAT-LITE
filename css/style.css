@@ -1,6 +1,6 @@
 /* ==========================================================
    KONEAT - DESIGN SYSTEM (Instagram Style + Moldes)
-   ================================================---------- */
+   ========================================================== */
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
 html,body{width:100%;height:100%;background:#000;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;overflow:hidden}
 .app{width:100%;max-width:430px;height:100%;height:100dvh;margin:0 auto;background:#000;position:relative;overflow:hidden}
@@ -535,3 +535,34 @@ input:checked + .slider:before { transform: translateX(22px); }
 }
 .legal-section h2 { font-size: 15px; font-weight: 800; margin-bottom: 10px; color: #111; }
 .legal-section p { font-size: 14px; color: #444; line-height: 1.55; }
+
+/* ESTILOS ADICIONAIS PARA LISTAS E BARRA FIXA DE ACEITE (LEGAL) */
+.legal-section ol, .legal-section ul {
+    padding-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 6px;
+}
+.legal-section li {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #444;
+    margin-bottom: 10px;
+}
+.legal-checkbox-bar {
+    background: #ffffff;
+    padding: 14px 16px;
+    border-top: 1px solid #e5e5ea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #111;
+    flex-shrink: 0;
+}
+.legal-checkbox-bar input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    accent-color: #0b63d1;
+}
