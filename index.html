@@ -438,15 +438,16 @@
             <path d="M12 3C6.48 3 2 6.92 2 11.75c0 2.75 1.46 5.2 3.75 6.8L4.8 21.5l3.55-1.78c1.15.32 2.38.53 3.65.53 5.52 0 10-3.92 10-8.75S17.52 3 12 3zm-3.5 9.75a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm3.5 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm3.5 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/>
           </svg>
         </button>
-
-        <button type="button" id="profile-dots-btn" onclick="toggleProfileDotsMenu(event)" class="p-1.5 rounded-full hover:bg-zinc-100 transition" aria-label="Mais opções">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="#000000">
-            <circle cx="12" cy="5" r="1.8"></circle>
-            <circle cx="12" cy="12" r="1.8"></circle>
-            <circle cx="12" cy="19" r="1.8"></circle>
-          </svg>
-        </button>
-
+        
+<button type="button" onclick="openToast('Mensagens diretas em breve')" class="p-1.5 rounded-full hover:bg-zinc-100 transition" aria-label="Mensagens">
+  <svg width="24" height="22" viewBox="0 0 32 28" aria-hidden="true">
+    <path d="M15.8 2C7.9 2 2 6.6 2 12.5c0 4.8 4.1 8.7 10 10l7.7 3.2-.8-4.1c6.8-.9 11.1-4.3 11.1-9.1C30 6.7 24.1 2 15.8 2Z" fill="#929297"/>
+    <circle cx="10" cy="12.5" r="1.65" fill="#fff"/>
+    <circle cx="16" cy="12.5" r="1.65" fill="#fff"/>
+    <circle cx="22" cy="12.5" r="1.65" fill="#fff"/>
+  </svg>
+</button>
+        
         <div id="profile-dots-popover" class="hidden animate-pop-menu absolute top-11 right-0 w-[220px] bg-white rounded-[22px] shadow-[0_12px_36px_rgba(0,0,0,0.14)] border border-zinc-100 py-2.5 px-2 z-50" onclick="event.stopPropagation()">
           <button type="button" onclick="closeProfileDotsMenu(); openSettingsModal();" class="w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl hover:bg-zinc-100 active:bg-zinc-200/70 transition text-left">
             <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
