@@ -430,7 +430,7 @@
        4. TELA PERFIL (Fundo Branco #FFFFFF)
        ======================================================================= -->
   <section id="screen-profile" class="screen bg-white text-black no-scrollbar relative">
-    <header class="sticky top-0 z-30 bg-white px-4 h-12 flex items-center justify-between">
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-xs border-b border-black/[0.08] px-4 h-12 flex items-center justify-between">
       <span id="profile-header-handle" class="text-sm font-bold text-black opacity-0 transition-opacity">@usuario</span>
       <div class="flex items-center gap-3 relative">
         <button type="button" onclick="openToast('Mensagens diretas em breve')" class="p-1.5 rounded-full hover:bg-zinc-100 transition" aria-label="Mensagens">
@@ -491,7 +491,7 @@
 
     <div id="profile-dots-backdrop" class="hidden fixed inset-0 z-20" onclick="closeProfileDotsMenu()"></div>
 
-    <div class="px-5 pt-1">
+    <div class="px-5 pt-2">
       <div class="flex items-center gap-6">
         <div class="relative shrink-0 cursor-pointer" onclick="triggerAvatarUpload()">
           <div id="profile-avatar-box" class="w-[84px] h-[84px] rounded-full bg-[#F1F3F5] flex items-center justify-center overflow-hidden">
@@ -531,11 +531,11 @@
         <p id="profile-bio-display" class="hidden text-[13px] text-black leading-snug"></p>
       </div>
 
-      <div class="mt-4 grid grid-cols-2 gap-2.5">
-        <button type="button" onclick="openEditProfileModal()" class="bg-[#EFEFEF] hover:bg-[#E4E4E7] active:scale-[0.98] text-black font-bold text-[13px] py-2.5 rounded-xl transition">
+      <div class="mt-3.5 grid grid-cols-2 gap-2.5">
+        <button type="button" onclick="openEditProfileModal()" class="bg-[#EFEFEF] hover:bg-[#E4E4E7] active:scale-[0.98] text-black font-bold text-[13px] py-1.5 rounded-lg transition">
           Editar perfil
         </button>
-        <button type="button" onclick="openShareSheet()" class="bg-[#EFEFEF] hover:bg-[#E4E4E7] active:scale-[0.98] text-black font-bold text-[13px] py-2.5 rounded-xl transition">
+        <button type="button" onclick="openShareSheet()" class="bg-[#EFEFEF] hover:bg-[#E4E4E7] active:scale-[0.98] text-black font-bold text-[13px] py-1.5 rounded-lg transition">
           Compartilhar perfil
         </button>
       </div>
