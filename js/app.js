@@ -1176,8 +1176,8 @@ function renderProfile() {
             <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
           </svg>
-          <p class="text-[13px] text-[#8E8E93] mb-4">Compartilhe seu primeiro momento com o koneat</p>
-          <button type="button" onclick="openCreateFromProfileFirstPost()" class="bg-[#EFEFEF] hover:bg-[#E4E4E7] active:scale-95 text-black font-bold text-[13px] px-7 py-3 rounded-xl transition">
+          <p class="text-[13px] text-[#8E8E93] mb-3.5">Compartilhe seu primeiro momento com o koneat</p>
+          <button type="button" onclick="openCreateFromProfileFirstPost()" class="bg-[#EFEFEF] hover:bg-[#E4E4E7] active:scale-95 text-black font-bold text-[12px] px-4 py-1.5 rounded-full transition">
             Crie seu primeiro post
           </button>
         </div>
